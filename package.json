@@ -1,6 +1,6 @@
 {
 	"name": "termdot",
-	"version": "0.1.8",
+	"version": "0.1.9",
 	"description": "Braille TUI — draw in the terminal with Unicode braille characters",
 	"type": "module",
 	"main": "./dist/index.cjs",
