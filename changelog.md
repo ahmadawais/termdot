@@ -8,7 +8,19 @@
 
 ## [0.1.12](https://github.com/ahmadawais/termdot/compare/v0.1.11...v0.1.12) (2026-02-12)
 
+### Documentation
+
+* lingo ([9d93997](https://github.com/ahmadawais/termdot/commit/9d9399749f2f0398c8f98e31a50a2d80bc93687b))
+
 ## [0.1.11](https://github.com/ahmadawais/termdot/compare/v0.1.10...v0.1.11) (2026-02-12)
+
+### Documentation
+
+* license ([5418005](https://github.com/ahmadawais/termdot/commit/54180052109f7c2531760e0b3901f8fd54ed34f6))
+
+### Improvements
+
+* repo link and license ([8117540](https://github.com/ahmadawais/termdot/commit/81175406658cb7a54eeb132e612c7ae4414f77a3))
 
 ## [0.1.10](https://github.com/ahmadawais/termdot/compare/v0.1.9...v0.1.10) (2026-02-12)
 
@@ -17,10 +29,9 @@
 * changelog ([14c36b2](https://github.com/ahmadawais/termdot/commit/14c36b2ed06d52b7f67d640971ea9875233a2bee))
 * log ([b687298](https://github.com/ahmadawais/termdot/commit/b6872983710dd4402916fc223fd6fda0dee69337))
 
-All notable changes to this project will be documented in this file.
+### Improvements
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+* Lower-case names ([19060cb](https://github.com/ahmadawais/termdot/commit/19060cbb8a9249cc2ce17781b74ce3ffaf248d30))
 
 ## [0.1.9](https://github.com/ahmadawais/termdot/compare/v0.1.8...v0.1.9) (2026-02-12)
 
