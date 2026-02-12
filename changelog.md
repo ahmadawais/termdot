@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.10](https://github.com/ahmadawais/termdot/compare/v0.1.9...v0.1.10) (2026-02-12)
+
+### Bug Fixes
+
+* changelog ([14c36b2](https://github.com/ahmadawais/termdot/commit/14c36b2ed06d52b7f67d640971ea9875233a2bee))
+* log ([b687298](https://github.com/ahmadawais/termdot/commit/b6872983710dd4402916fc223fd6fda0dee69337))
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
