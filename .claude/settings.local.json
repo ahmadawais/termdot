@@ -1,14 +1,15 @@
 {
-	"permissions": {
-		"allow": [
-			"Bash(pnpm install:*)",
-			"Bash(pnpm lint:*)",
-			"Bash(pnpm lint:fix:*)",
-			"Bash(pnpm typecheck:*)",
-			"Bash(pnpm build:*)",
-			"Bash(pnpm test:*)",
-			"Bash(npx tsx:*)",
-			"Bash(pnpm add:*)"
-		]
-	}
+  "permissions": {
+    "allow": [
+      "Bash(pnpm install:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm lint:fix:*)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm test:*)",
+      "Bash(npx tsx:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm biome check:*)"
+    ]
+  }
 }
