@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.1.12](https://github.com/ahmadawais/termdot/compare/v0.1.11...v0.1.12) (2026-02-12)
+
 ## [0.1.11](https://github.com/ahmadawais/termdot/compare/v0.1.10...v0.1.11) (2026-02-12)
 
 ## [0.1.10](https://github.com/ahmadawais/termdot/compare/v0.1.9...v0.1.10) (2026-02-12)
