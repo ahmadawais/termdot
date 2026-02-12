@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.13](https://github.com/ahmadawais/termdot/compare/v0.1.12...v0.1.13) (2026-02-12)
+
+### Documentation
+
+* lingo tui ([4d37068](https://github.com/ahmadawais/termdot/commit/4d370683d4f674fb26cafa962a4c220bb8d9f1fb))
+
 ## [0.1.12](https://github.com/ahmadawais/termdot/compare/v0.1.11...v0.1.12) (2026-02-12)
 
 ## [0.1.11](https://github.com/ahmadawais/termdot/compare/v0.1.10...v0.1.11) (2026-02-12)
