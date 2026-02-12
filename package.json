@@ -1,0 +1,42 @@
+{
+	"name": "termdot",
+	"version": "0.0.1",
+	"description": "Braille TUI — draw in the terminal with Unicode braille characters",
+	"type": "module",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"files": ["dist"],
+	"scripts": {
+		"build": "tsup",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"lint": "biome check .",
+		"lint:fix": "biome check --fix .",
+		"typecheck": "tsc --noEmit"
+	},
+	"keywords": [
+		"braille",
+		"tui",
+		"terminal",
+		"canvas",
+		"draw",
+		"unicode",
+		"cli"
+	],
+	"license": "MIT",
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"@types/node": "^25.2.3",
+		"tsup": "^8.4.0",
+		"typescript": "^5.7.3",
+		"vitest": "^3.0.5"
+	}
+}
