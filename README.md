@@ -124,7 +124,6 @@ npx tsx examples/rotating-cube.ts  # 3D wireframe cube
 npx tsx examples/cube.ts           # Perspective-projected cube
 npx tsx examples/speed-test.ts     # Benchmark
 npx tsx examples/spinners.ts       # Braille status indicators
-npx tsx examples/icons.ts          # Icon rendering
 npx tsx examples/kitchen-sink.ts   # Every feature demo
 ```
 
