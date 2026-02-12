@@ -102,6 +102,17 @@ Each character cell maps to a 2×4 pixel grid:
 `````
 ```
 
+## Scripts
+
+```sh
+pnpm build        # Bundle with tsup
+pnpm test         # Run tests (vitest)
+pnpm test:watch   # Run tests in watch mode
+pnpm lint         # Lint with Biome
+pnpm lint:fix     # Auto-fix lint issues
+pnpm typecheck    # Type-check (tsc --noEmit)
+```
+
 ## Examples
 
 ```sh
@@ -113,9 +124,10 @@ npx tsx examples/rotating-cube.ts  # 3D wireframe cube
 npx tsx examples/cube.ts           # Perspective-projected cube
 npx tsx examples/speed-test.ts     # Benchmark
 npx tsx examples/spinners.ts       # Braille status indicators
+npx tsx examples/icons.ts          # Icon rendering
 npx tsx examples/kitchen-sink.ts   # Every feature demo
 ```
 
 ## License
 
-MIT
+MIT — [Ahmad Awais](https://x.com/MrAhmadAwais)
