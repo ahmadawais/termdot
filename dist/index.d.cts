@@ -14,6 +14,8 @@
  */
 declare const BRAILLE_OFFSET = 10240;
 declare const PIXEL_MAP: readonly (readonly [number, number])[];
+/** Bitmask for each braille dot number (1–8). */
+declare const DOT_MASKS: readonly number[];
 /** A single cell can hold a braille bitmask (number) or a text character (string). */
 type CellValue = number | string;
 /** Sparse row → col → cell storage. */
@@ -69,6 +71,62 @@ declare function toggle(canvas: Canvas, x: number, y: number): void;
 declare function get(canvas: Canvas, x: number, y: number): boolean;
 /** Set text at the given pixel coords. Each character occupies one cell column. */
 declare function setText(canvas: Canvas, x: number, y: number, text: string): void;
+/**
+ * 8-element tuple: on/off state for dots 1–8.
+ *
+ *   ,___,
+ *   |1 4|
+ *   |2 5|
+ *   |3 6|
+ *   |7 8|
+ *   `````
+ */
+type DotPattern = readonly [
+    boolean,
+    boolean,
+    boolean,
+    boolean,
+    boolean,
+    boolean,
+    boolean,
+    boolean
+];
+/** Build a braille character from an 8-element on/off pattern (dots 1–8). */
+declare function braille(dots: DotPattern): string;
+/** Build a braille character by listing which dot numbers (1–8) are on. */
+declare function brailleDots(...dots: readonly number[]): string;
+/**
+ * Build a 1–3 character braille icon. Each argument is an array of
+ * dot numbers (1–8) that are ON for that character position.
+ *
+ * @example
+ * brailleIcon([1, 2, 3, 7], [4, 5, 6, 8]) // "⡇⢸" — left bar + right bar
+ * brailleIcon([1, 4])                       // "⠉"   — single char, top row
+ * brailleIcon([1], [1, 8], [1])             // 3-char
+ */
+declare function brailleIcon(...chars: readonly (readonly number[])[]): string;
+/**
+ * Build a braille icon from a visual pixel grid.
+ * Each row is an array of 0/1 values. Max 6 columns wide × 4 rows tall.
+ * Every 2 columns map to one braille character.
+ *
+ *   col:  0 1 │ 2 3 │ 4 5
+ *         ────┼─────┼────
+ *   row0: 1 4 │ 1 4 │ 1 4
+ *   row1: 2 5 │ 2 5 │ 2 5
+ *   row2: 3 6 │ 3 6 │ 3 6
+ *   row3: 7 8 │ 7 8 │ 7 8
+ *         ─ch0─ ─ch1─ ─ch2─
+ *
+ * @example
+ * brailleGrid([
+ *   [0, 1, 1, 0],
+ *   [1, 0, 0, 1],
+ *   [1, 0, 0, 1],
+ *   [0, 1, 1, 0],
+ * ]) // "⠳⠞" — a diamond shape, 2 chars wide
+ */
+declare function brailleGrid(pixels: readonly (readonly number[])[]): string;
 /** Return the canvas content as an array of strings (one per row). */
 declare function rows(canvas: Canvas, bounds?: FrameBounds): readonly string[];
 /** Render the canvas as a string. */
@@ -130,4 +188,4 @@ declare function fixedGet(canvas: FixedCanvas, x: number, y: number): boolean;
 /** Render a fixed canvas as a string. */
 declare function fixedFrame(canvas: FixedCanvas, delimiter?: string): string;
 
-export { type AnimateOptions, BRAILLE_OFFSET, type Canvas, type CanvasChars, type CellValue, type CreateCanvasOptions, type FixedCanvas, type FrameBounds, type FrameGenerator, PIXEL_MAP, type Point, type TerminalSize, type TurtleState, animate, clear, createCanvas, createFixedCanvas, createTurtle, fixedClear, fixedFrame, fixedGet, fixedSet, fixedToggle, fixedUnset, frame, get, getPos, getTerminalSize, line, normalize, polygon, rows, set, setText, toggle, turtleBack, turtleDown, turtleForward, turtleLeft, turtleMove, turtleRight, turtleUp, unset };
+export { type AnimateOptions, BRAILLE_OFFSET, type Canvas, type CanvasChars, type CellValue, type CreateCanvasOptions, DOT_MASKS, type DotPattern, type FixedCanvas, type FrameBounds, type FrameGenerator, PIXEL_MAP, type Point, type TerminalSize, type TurtleState, animate, braille, brailleDots, brailleGrid, brailleIcon, clear, createCanvas, createFixedCanvas, createTurtle, fixedClear, fixedFrame, fixedGet, fixedSet, fixedToggle, fixedUnset, frame, get, getPos, getTerminalSize, line, normalize, polygon, rows, set, setText, toggle, turtleBack, turtleDown, turtleForward, turtleLeft, turtleMove, turtleRight, turtleUp, unset };

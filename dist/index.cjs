@@ -21,8 +21,13 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 var index_exports = {};
 __export(index_exports, {
   BRAILLE_OFFSET: () => BRAILLE_OFFSET,
+  DOT_MASKS: () => DOT_MASKS,
   PIXEL_MAP: () => PIXEL_MAP,
   animate: () => animate,
+  braille: () => braille,
+  brailleDots: () => brailleDots,
+  brailleGrid: () => brailleGrid,
+  brailleIcon: () => brailleIcon,
   clear: () => clear,
   createCanvas: () => createCanvas,
   createFixedCanvas: () => createFixedCanvas,
@@ -60,6 +65,24 @@ var PIXEL_MAP = [
   [2, 16],
   [4, 32],
   [64, 128]
+];
+var DOT_MASKS = [
+  1,
+  // dot 1
+  2,
+  // dot 2
+  4,
+  // dot 3
+  8,
+  // dot 4
+  16,
+  // dot 5
+  32,
+  // dot 6
+  64,
+  // dot 7
+  128
+  // dot 8
 ];
 function normalize(coord) {
   return Math.round(coord);
@@ -150,6 +173,60 @@ function setText(canvas, x, y, text) {
   for (let i = 0; i < text.length; i++) {
     rowMap.set(col + i, text[i]);
   }
+}
+function braille(dots) {
+  let mask = 0;
+  for (let i = 0; i < 8; i++) {
+    if (dots[i]) {
+      mask |= DOT_MASKS[i];
+    }
+  }
+  return String.fromCharCode(BRAILLE_OFFSET + mask);
+}
+function brailleDots(...dots) {
+  let mask = 0;
+  for (const d of dots) {
+    if (d < 1 || d > 8) continue;
+    mask |= DOT_MASKS[d - 1];
+  }
+  return String.fromCharCode(BRAILLE_OFFSET + mask);
+}
+function brailleIcon(...chars) {
+  if (chars.length === 0 || chars.length > 3) return "";
+  const parts = [];
+  for (let i = 0; i < chars.length; i++) {
+    const dots = chars[i];
+    if (!dots) continue;
+    let mask = 0;
+    for (const d of dots) {
+      if (d < 1 || d > 8) continue;
+      mask |= DOT_MASKS[d - 1];
+    }
+    parts.push(String.fromCharCode(BRAILLE_OFFSET + mask));
+  }
+  return parts.join("");
+}
+function brailleGrid(pixels) {
+  let maxWidth = 0;
+  for (const row of pixels) {
+    if (row.length > maxWidth) maxWidth = row.length;
+  }
+  const height = Math.min(pixels.length, 4);
+  const width = Math.min(maxWidth, 6);
+  const charCount = Math.ceil(width / 2);
+  const masks = Array.from({ length: charCount }, () => 0);
+  for (let y = 0; y < height; y++) {
+    const row = pixels[y];
+    if (!row) continue;
+    for (let x = 0; x < width; x++) {
+      if (!row[x]) continue;
+      const charIdx = Math.floor(x / 2);
+      const mask = PIXEL_MAP[y]?.[x % 2];
+      if (mask === void 0) continue;
+      masks[charIdx] = (masks[charIdx] ?? 0) | mask;
+    }
+  }
+  return masks.map((m) => String.fromCharCode(BRAILLE_OFFSET + m)).join("");
 }
 function rows(canvas, bounds) {
   if (canvas.chars.size === 0) return [];
@@ -381,8 +458,13 @@ function fixedFrame(canvas, delimiter = "\n") {
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   BRAILLE_OFFSET,
+  DOT_MASKS,
   PIXEL_MAP,
   animate,
+  braille,
+  brailleDots,
+  brailleGrid,
+  brailleIcon,
   clear,
   createCanvas,
   createFixedCanvas,

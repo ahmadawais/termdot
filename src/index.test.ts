@@ -1,6 +1,10 @@
 import {describe, expect, it} from 'vitest';
 import {
 	animate,
+	braille,
+	brailleDots,
+	brailleGrid,
+	brailleIcon,
 	clear,
 	createCanvas,
 	createFixedCanvas,
@@ -46,6 +50,249 @@ describe('normalize', () => {
 		expect(normalize(1.5)).toBe(2);
 		expect(normalize(1.6)).toBe(2);
 		expect(normalize(-0.6)).toBe(-1);
+	});
+});
+
+// ---------------------------------------------------------------------------
+// braille
+// ---------------------------------------------------------------------------
+
+describe('braille', () => {
+	it('returns blank braille for all dots off', () => {
+		expect(
+			braille([false, false, false, false, false, false, false, false]),
+		).toBe('\u2800');
+	});
+
+	it('returns full braille for all dots on', () => {
+		expect(braille([true, true, true, true, true, true, true, true])).toBe(
+			'\u28ff',
+		);
+	});
+
+	it('turns on dot 1 only', () => {
+		expect(
+			braille([true, false, false, false, false, false, false, false]),
+		).toBe('\u2801');
+	});
+
+	it('turns on dot 4 only', () => {
+		expect(
+			braille([false, false, false, true, false, false, false, false]),
+		).toBe('\u2808');
+	});
+
+	it('turns on dots 2 and 4 (off, on, off, on, ...)', () => {
+		expect(
+			braille([false, true, false, true, false, false, false, false]),
+		).toBe('\u280a');
+	});
+
+	it('turns on left column only (dots 1,2,3,7)', () => {
+		expect(
+			braille([true, true, true, false, false, false, true, false]),
+		).toBe('\u2847');
+	});
+
+	it('turns on right column only (dots 4,5,6,8)', () => {
+		expect(
+			braille([false, false, false, true, true, true, false, true]),
+		).toBe('\u28b8');
+	});
+});
+
+// ---------------------------------------------------------------------------
+// brailleDots
+// ---------------------------------------------------------------------------
+
+describe('brailleDots', () => {
+	it('returns blank braille for no dots', () => {
+		expect(brailleDots()).toBe('\u2800');
+	});
+
+	it('returns full braille for all 8 dots', () => {
+		expect(brailleDots(1, 2, 3, 4, 5, 6, 7, 8)).toBe('\u28ff');
+	});
+
+	it('turns on single dot', () => {
+		expect(brailleDots(1)).toBe('\u2801');
+		expect(brailleDots(8)).toBe('\u2880');
+	});
+
+	it('turns on dots 2 and 4', () => {
+		expect(brailleDots(2, 4)).toBe('\u280a');
+	});
+
+	it('ignores out-of-range dot numbers', () => {
+		expect(brailleDots(0, 9, -1)).toBe('\u2800');
+		expect(brailleDots(1, 0, 9)).toBe('\u2801');
+	});
+
+	it('handles duplicate dot numbers', () => {
+		expect(brailleDots(1, 1, 1)).toBe('\u2801');
+	});
+});
+
+// ---------------------------------------------------------------------------
+// brailleIcon
+// ---------------------------------------------------------------------------
+
+describe('brailleIcon', () => {
+	it('returns empty string for no arguments', () => {
+		expect(brailleIcon()).toBe('');
+	});
+
+	it('returns empty string for more than 3 characters', () => {
+		expect(brailleIcon([1], [2], [3], [4])).toBe('');
+	});
+
+	it('builds a single character icon', () => {
+		expect(brailleIcon([1, 4])).toBe('\u2809');
+	});
+
+	it('builds a 2-character icon', () => {
+		// Left column bar + right column bar
+		const result = brailleIcon([1, 2, 3, 7], [4, 5, 6, 8]);
+		expect(result).toBe('\u2847\u28b8');
+		expect(result.length).toBe(2);
+	});
+
+	it('builds a 3-character icon', () => {
+		const result = brailleIcon([1], [1, 8], [1]);
+		expect(result.length).toBe(3);
+		expect(result).toBe('\u2801\u2881\u2801');
+	});
+
+	it('handles empty dot arrays as blank braille', () => {
+		expect(brailleIcon([])).toBe('\u2800');
+		expect(brailleIcon([], [1])).toBe('\u2800\u2801');
+	});
+
+	it('ignores out-of-range dot numbers', () => {
+		expect(brailleIcon([0, 9, 1])).toBe('\u2801');
+	});
+});
+
+// ---------------------------------------------------------------------------
+// brailleGrid
+// ---------------------------------------------------------------------------
+
+describe('brailleGrid', () => {
+	it('returns blank for all-zero grid', () => {
+		expect(
+			brailleGrid([
+				[0, 0],
+				[0, 0],
+				[0, 0],
+				[0, 0],
+			]),
+		).toBe('\u2800');
+	});
+
+	it('returns full braille for all-one 2x4 grid', () => {
+		expect(
+			brailleGrid([
+				[1, 1],
+				[1, 1],
+				[1, 1],
+				[1, 1],
+			]),
+		).toBe('\u28ff');
+	});
+
+	it('maps top-left pixel to dot 1', () => {
+		expect(
+			brailleGrid([
+				[1, 0],
+				[0, 0],
+				[0, 0],
+				[0, 0],
+			]),
+		).toBe('\u2801');
+	});
+
+	it('maps top-right pixel to dot 4', () => {
+		expect(
+			brailleGrid([
+				[0, 1],
+				[0, 0],
+				[0, 0],
+				[0, 0],
+			]),
+		).toBe('\u2808');
+	});
+
+	it('maps bottom-left pixel to dot 7', () => {
+		expect(
+			brailleGrid([
+				[0, 0],
+				[0, 0],
+				[0, 0],
+				[1, 0],
+			]),
+		).toBe('\u2840');
+	});
+
+	it('maps bottom-right pixel to dot 8', () => {
+		expect(
+			brailleGrid([
+				[0, 0],
+				[0, 0],
+				[0, 0],
+				[0, 1],
+			]),
+		).toBe('\u2880');
+	});
+
+	it('builds a 2-character wide icon from 4-column grid', () => {
+		// Left bar | right bar
+		const result = brailleGrid([
+			[1, 0, 0, 1],
+			[1, 0, 0, 1],
+			[1, 0, 0, 1],
+			[1, 0, 0, 1],
+		]);
+		expect(result.length).toBe(2);
+		expect(result).toBe('\u2847\u28b8');
+	});
+
+	it('builds a 3-character wide icon from 6-column grid', () => {
+		const result = brailleGrid([
+			[1, 0, 0, 0, 0, 1],
+			[0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0],
+		]);
+		expect(result.length).toBe(3);
+		// char 0: dot 1, char 1: blank, char 2: dot 4
+		expect(result).toBe('\u2801\u2800\u2808');
+	});
+
+	it('handles ragged rows by treating missing cols as 0', () => {
+		const result = brailleGrid([[1, 1, 1, 1], [1], [1, 1], [1, 1, 1]]);
+		expect(result.length).toBe(2);
+	});
+
+	it('clamps to max 4 rows', () => {
+		const result = brailleGrid([
+			[1, 1],
+			[1, 1],
+			[1, 1],
+			[1, 1],
+			[1, 1], // row 5 — ignored
+		]);
+		expect(result).toBe('\u28ff');
+	});
+
+	it('clamps to max 6 columns', () => {
+		const result = brailleGrid([
+			[1, 1, 1, 1, 1, 1, 1, 1], // cols 7-8 ignored
+		]);
+		expect(result.length).toBe(3);
+	});
+
+	it('handles empty grid', () => {
+		expect(brailleGrid([])).toBe('');
 	});
 });
 

@@ -26,6 +26,18 @@ const PIXEL_MAP: readonly (readonly [number, number])[] = [
 	[0x40, 0x80],
 ] as const;
 
+/** Bitmask for each braille dot number (1–8). */
+const DOT_MASKS: readonly number[] = [
+	0x01, // dot 1
+	0x02, // dot 2
+	0x04, // dot 3
+	0x08, // dot 4
+	0x10, // dot 5
+	0x20, // dot 6
+	0x40, // dot 7
+	0x80, // dot 8
+] as const;
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -207,6 +219,126 @@ function setText(canvas: Canvas, x: number, y: number, text: string): void {
 	for (let i = 0; i < text.length; i++) {
 		rowMap.set(col + i, text[i] as string);
 	}
+}
+
+// ---------------------------------------------------------------------------
+// Braille character builders
+// ---------------------------------------------------------------------------
+
+/**
+ * 8-element tuple: on/off state for dots 1–8.
+ *
+ *   ,___,
+ *   |1 4|
+ *   |2 5|
+ *   |3 6|
+ *   |7 8|
+ *   `````
+ */
+type DotPattern = readonly [
+	boolean,
+	boolean,
+	boolean,
+	boolean,
+	boolean,
+	boolean,
+	boolean,
+	boolean,
+];
+
+/** Build a braille character from an 8-element on/off pattern (dots 1–8). */
+function braille(dots: DotPattern): string {
+	let mask = 0;
+	for (let i = 0; i < 8; i++) {
+		if (dots[i]) {
+			mask |= DOT_MASKS[i] as number;
+		}
+	}
+	return String.fromCharCode(BRAILLE_OFFSET + mask);
+}
+
+/** Build a braille character by listing which dot numbers (1–8) are on. */
+function brailleDots(...dots: readonly number[]): string {
+	let mask = 0;
+	for (const d of dots) {
+		if (d < 1 || d > 8) continue;
+		mask |= DOT_MASKS[d - 1] as number;
+	}
+	return String.fromCharCode(BRAILLE_OFFSET + mask);
+}
+
+/**
+ * Build a 1–3 character braille icon. Each argument is an array of
+ * dot numbers (1–8) that are ON for that character position.
+ *
+ * @example
+ * brailleIcon([1, 2, 3, 7], [4, 5, 6, 8]) // "⡇⢸" — left bar + right bar
+ * brailleIcon([1, 4])                       // "⠉"   — single char, top row
+ * brailleIcon([1], [1, 8], [1])             // 3-char
+ */
+function brailleIcon(...chars: readonly (readonly number[])[]): string {
+	if (chars.length === 0 || chars.length > 3) return '';
+
+	const parts: string[] = [];
+	for (let i = 0; i < chars.length; i++) {
+		const dots = chars[i];
+		if (!dots) continue;
+		let mask = 0;
+		for (const d of dots) {
+			if (d < 1 || d > 8) continue;
+			mask |= DOT_MASKS[d - 1] as number;
+		}
+		parts.push(String.fromCharCode(BRAILLE_OFFSET + mask));
+	}
+	return parts.join('');
+}
+
+/**
+ * Build a braille icon from a visual pixel grid.
+ * Each row is an array of 0/1 values. Max 6 columns wide × 4 rows tall.
+ * Every 2 columns map to one braille character.
+ *
+ *   col:  0 1 │ 2 3 │ 4 5
+ *         ────┼─────┼────
+ *   row0: 1 4 │ 1 4 │ 1 4
+ *   row1: 2 5 │ 2 5 │ 2 5
+ *   row2: 3 6 │ 3 6 │ 3 6
+ *   row3: 7 8 │ 7 8 │ 7 8
+ *         ─ch0─ ─ch1─ ─ch2─
+ *
+ * @example
+ * brailleGrid([
+ *   [0, 1, 1, 0],
+ *   [1, 0, 0, 1],
+ *   [1, 0, 0, 1],
+ *   [0, 1, 1, 0],
+ * ]) // "⠳⠞" — a diamond shape, 2 chars wide
+ */
+function brailleGrid(pixels: readonly (readonly number[])[]): string {
+	let maxWidth = 0;
+	for (const row of pixels) {
+		if (row.length > maxWidth) maxWidth = row.length;
+	}
+
+	const height = Math.min(pixels.length, 4);
+	const width = Math.min(maxWidth, 6);
+	const charCount = Math.ceil(width / 2);
+
+	const masks: number[] = Array.from({length: charCount}, () => 0);
+
+	for (let y = 0; y < height; y++) {
+		const row = pixels[y];
+		if (!row) continue;
+		for (let x = 0; x < width; x++) {
+			if (!row[x]) continue;
+			const charIdx = Math.floor(x / 2);
+			const mask = PIXEL_MAP[y]?.[x % 2];
+			if (mask === undefined) continue;
+			masks[charIdx] = (masks[charIdx] ?? 0) | mask;
+		}
+	}
+
+	return masks.map(m => String.fromCharCode(BRAILLE_OFFSET + m)).join('');
 }
 
 // ---------------------------------------------------------------------------
@@ -584,12 +716,14 @@ export {
 	// Constants
 	BRAILLE_OFFSET,
 	PIXEL_MAP,
+	DOT_MASKS,
 	// Types
 	type AnimateOptions,
 	type Canvas,
 	type CanvasChars,
 	type CellValue,
 	type CreateCanvasOptions,
+	type DotPattern,
 	type FixedCanvas,
 	type FrameBounds,
 	type FrameGenerator,
@@ -601,6 +735,11 @@ export {
 	getPos,
 	// Terminal
 	getTerminalSize,
+	// Braille builders
+	braille,
+	brailleDots,
+	brailleIcon,
+	brailleGrid,
 	// Sparse canvas
 	createCanvas,
 	clear,
