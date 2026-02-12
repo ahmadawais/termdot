@@ -1,6 +1,6 @@
 # termdot
 
-Draw in the terminal with Unicode braille characters (U+2800–U+28FF). Each character is a 2×4 pixel grid — giving you 8 dots per cell for high-resolution terminal graphics.
+Draw in the terminal with Unicode braille characters (U+2800–U+28FF). Each character is a 2×4 pixel grid — giving you 8 dots per cell for high-resolution terminal graphics. Perfect for charts, games, animations, and more.
 
 ## Install
 
