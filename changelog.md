@@ -44,7 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * `brailleIcon(...chars)` — build 1–3 character braille icons with dot numbers per character
 * `brailleGrid(pixels)` — build braille icons from a visual 2D pixel grid (up to 6×4)
 * `DotPattern` type for the 8-element boolean tuple
-* `DOT_MASKS` constant mapping dot numbers to bitmasks
+* `DOT_MASKS` constant mapping dot numbers to bit masks
 * Icons example (`examples/icons.ts`)
 * Sparse canvas with auto-expanding `Map`-backed storage
 * Fixed-size canvas with `Uint8Array` buffer for predictable bounds
