@@ -129,4 +129,4 @@ npx tsx examples/kitchen-sink.ts   # Every feature demo
 
 ## License
 
-MIT — [Ahmad Awais](https://x.com/MrAhmadAwais)
+Apache-2.0 — [Ahmad Awais](https://x.com/MrAhmadAwais)
